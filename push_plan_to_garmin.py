@@ -3,11 +3,11 @@
 push_plan_to_garmin.py
 ======================
 
-Læser en angiven JSON-plan. Kan uploade nye pas og rydde gamle, 
-eller specifikt blot fjerne alle pas (og kalenderindgange) for 
-en given plan med --delete-plan.
+Reads a given JSON plan. Can upload new workouts and clean up old ones,
+or specifically just remove all workouts (and calendar entries) for
+a given plan with --delete-plan.
 
-Krav: Stien til JSON-filen SKAL altid angives som første argument.
+Requirement: the path to the JSON file MUST always be given as the first argument.
 """
 
 from __future__ import annotations
@@ -21,13 +21,13 @@ from unittest.mock import MagicMock
 from datetime import date, timedelta
 
 # --------------------------------------------------------------------------- #
-# KONFIGURATION
+# CONFIGURATION
 # --------------------------------------------------------------------------- #
 TOKENSTORE   = os.path.expanduser("~/.garminconnect")
 WEEKDAY_OFFSET = {"mon": 0, "tue": 1, "wed": 2, "thu": 3, "fri": 4, "sat": 5, "sun": 6}
 
 # --------------------------------------------------------------------------- #
-# GARMIN-SKEMA-KONSTANTER
+# GARMIN SCHEMA CONSTANTS
 # --------------------------------------------------------------------------- #
 RUN_SPORT = {"sportTypeId": 1, "sportTypeKey": "running"}
 
@@ -43,7 +43,7 @@ TARGET_PACE_ZONE_KEY = "pace.zone"
 
 
 # --------------------------------------------------------------------------- #
-# PACE-HJÆLPERE
+# PACE HELPERS
 # --------------------------------------------------------------------------- #
 def pace_to_secs(p: str) -> int:
     m, s = p.split(":")
@@ -63,7 +63,7 @@ def pace_target(paces: dict, zone: str) -> dict:
 
 
 # --------------------------------------------------------------------------- #
-# STEP-BYGGERE
+# STEP BUILDERS
 # --------------------------------------------------------------------------- #
 def exec_step(step_key: str, km: float, target: dict) -> dict:
     step = {
@@ -140,8 +140,8 @@ def steps_for(sess: dict, paces: dict) -> list:
                 repeat_group(reps, [exec_step_time("interval", 20, pace_target(paces, "stride")),
                                     exec_step_time("recovery", 45, pace_target(paces, "recovery"))]),
                 exec_step("interval", cd, pace_target(paces, "easy"))]
-    
-    raise ValueError(f"Ukendt session-type: {t!r}")
+
+    raise ValueError(f"Unknown session type: {t!r}")
 
 
 def assign_step_orders(steps: list, start: int = 1) -> int:
@@ -172,11 +172,11 @@ def estimate_secs(steps: list, paces: dict) -> int:
 def build_payload(sess: dict, paces: dict, tag: str) -> dict:
     steps = steps_for(sess, paces)
     assign_step_orders(steps)
-    
+
     day_str = str(sess["day"]).capitalize()
     week_str = f"{sess['week']:02d}"
     name = f"{tag} W{week_str}-{day_str} {sess['name']}"
-    
+
     return {
         "sportType": RUN_SPORT,
         "workoutName": name,
@@ -192,7 +192,7 @@ def session_date(start_monday: date, week: int, day: str) -> date:
 
 
 # --------------------------------------------------------------------------- #
-# TRANSPORT / API KALD
+# TRANSPORT / API CALLS
 # --------------------------------------------------------------------------- #
 def _inner(client):
     return getattr(client, "client", None) or getattr(client, "garth", None)
@@ -201,6 +201,8 @@ def _inner(client):
 def _request_json(client, method: str, path: str, **kw):
     inner = _inner(client)
     last = None
+    # Try with api=True first (matches the connectapi domain); fall back without
+    # it if that kwarg is rejected by the installed client version.
     for use_api in (True, False):
         try:
             resp = inner.request(method, "connectapi", path, api=use_api, **kw) if use_api \
@@ -211,7 +213,7 @@ def _request_json(client, method: str, path: str, **kw):
         except TypeError as exc:
             last = exc
             continue
-    raise RuntimeError(f"Kunne ikke kalde {method} {path}: {last}")
+    raise RuntimeError(f"Could not call {method} {path}: {last}")
 
 
 def list_plan_workouts(client, tag: str) -> list:
@@ -221,7 +223,7 @@ def list_plan_workouts(client, tag: str) -> list:
         data = _request_json(client, "GET", "/workout-service/workouts",
                              params={"start": 0, "limit": 999, "myWorkoutsOnly": True})
     items = data if isinstance(data, list) else (data or {}).get("workoutList", data)
-    
+
     workouts = []
     for w in (items or []):
         w_name = str(w.get("workoutName", ""))
@@ -236,17 +238,17 @@ def create_workout(client, payload: dict) -> int:
 
 
 def delete_existing_workouts(client, tag: str) -> tuple[int, int]:
-    """Sletter workouts og returnerer (antal_succes, antal_fejl)."""
+    """Deletes workouts and returns (success_count, fail_count)."""
     old = list_plan_workouts(client, tag)
-    print(f"\nFinder pas for plan '{tag}' ({len(old)} pas fundet i Garmin Connect)...")
+    print(f"\nFinding workouts for plan '{tag}' ({len(old)} workouts found in Garmin Connect)...")
     ok = fail = 0
     for w in old:
         try:
             client.delete_workout(w["workoutId"])
-            print(f"  - slettet: {w.get('workoutName')}")
+            print(f"  - deleted: {w.get('workoutName')}")
             ok += 1
         except Exception as exc:
-            print(f"  x kunne ikke slette {w.get('workoutName')}: {exc}")
+            print(f"  x could not delete {w.get('workoutName')}: {exc}")
             fail += 1
     return ok, fail
 
@@ -258,16 +260,16 @@ def authenticate():
     try:
         from garminconnect import Garmin
     except ImportError:
-        sys.exit("Mangler garminconnect. Kør: pip install --upgrade garminconnect curl_cffi")
+        sys.exit("Missing garminconnect. Run: pip install --upgrade garminconnect curl_cffi")
 
     email    = os.getenv("GARMIN_EMAIL") or os.getenv("EMAIL")
     password = os.getenv("GARMIN_PASSWORD") or os.getenv("PASSWORD")
     have_token = os.path.isdir(TOKENSTORE) and any(os.scandir(TOKENSTORE))
 
     if not have_token and not (email and password):
-        sys.exit("Første login kræver GARMIN_EMAIL og GARMIN_PASSWORD som miljøvariable.")
+        sys.exit("First login requires GARMIN_EMAIL and GARMIN_PASSWORD as environment variables.")
 
-    client = Garmin(email, password, prompt_mfa=lambda: input("MFA-kode: "))
+    client = Garmin(email, password, prompt_mfa=lambda: input("MFA code: "))
     client.login(TOKENSTORE)
     return client
 
@@ -287,51 +289,51 @@ class TestGarminPayload(unittest.TestCase):
         }
 
     def test_build_payload_title_formatting(self):
-        sample_session = {"week": 3, "day": "wed", "type": "easy", "km": 3, "name": "Roligt 3 km"}
+        sample_session = {"week": 3, "day": "wed", "type": "easy", "km": 3, "name": "Easy 3 km"}
         payload = build_payload(sample_session, self.paces, "HM26")
-        self.assertEqual(payload["workoutName"], "HM26 W03-Wed Roligt 3 km")
+        self.assertEqual(payload["workoutName"], "HM26 W03-Wed Easy 3 km")
 
     def test_progressive_is_all_interval_type(self):
-        sample_session = {"week": 9, "day": "wed", "type": "progressive", "km": 10, "name": "Progressivt 10 km"}
+        sample_session = {"week": 9, "day": "wed", "type": "progressive", "km": 10, "name": "Progressive 10 km"}
         steps = steps_for(sample_session, self.paces)
-        
+
         self.assertEqual(len(steps), 3)
         for s in steps:
             self.assertEqual(s["stepType"]["stepTypeKey"], "interval")
 
     def test_intervals_has_correct_types_and_recovery(self):
-        sample_session = {"week": 11, "day": "wed", "type": "intervals", "km": 6, "reps": 5, "work_km": 0.4, "recover_km": 0.2, "name": "Intervaller"}
+        sample_session = {"week": 11, "day": "wed", "type": "intervals", "km": 6, "reps": 5, "work_km": 0.4, "recover_km": 0.2, "name": "Intervals"}
         steps = steps_for(sample_session, self.paces)
-        
+
         self.assertEqual(steps[0]["stepType"]["stepTypeKey"], "interval")
         self.assertEqual(steps[2]["stepType"]["stepTypeKey"], "interval")
-        
+
         repeat_grp = steps[1]
         self.assertEqual(repeat_grp["workoutSteps"][1]["stepType"]["stepTypeKey"], "recovery")
 
 
 class TestGarminDeletionLogic(unittest.TestCase):
     def test_delete_existing_workouts(self):
-        # Mocker Garmin-klienten for at teste slette-logikken
+        # Mock the Garmin client to test the deletion logic
         mock_client = MagicMock()
-        
-        # Simulerer returneret data fra Garmins API
+
+        # Simulates data returned from Garmin's API
         mock_client.get_workouts.return_value = [
-            {"workoutId": 101, "workoutName": "HM26 W01-Mon Roligt"},
-            {"workoutId": 102, "workoutName": "HM26 W01-Wed Intervaller"},
-            {"workoutId": 999, "workoutName": "Anden Plan W02-Sun"}
+            {"workoutId": 101, "workoutName": "HM26 W01-Mon Easy"},
+            {"workoutId": 102, "workoutName": "HM26 W01-Wed Intervals"},
+            {"workoutId": 999, "workoutName": "Other Plan W02-Sun"}
         ]
-        
-        # Filtreringen testes indirekte ved at køre list_plan_workouts
+
+        # The filtering is tested indirectly by running list_plan_workouts
         filtered = list_plan_workouts(mock_client, "HM26")
         self.assertEqual(len(filtered), 2)
-        
-        # Test selve slette-funktionen
+
+        # Test the deletion function itself
         ok, fail = delete_existing_workouts(mock_client, "HM26")
         self.assertEqual(ok, 2)
         self.assertEqual(fail, 0)
-        
-        # Bekræfter at delete_workout kun blev kaldt med ID'er fra "HM26"-planen
+
+        # Confirms that delete_workout was only called with IDs from the "HM26" plan
         mock_client.delete_workout.assert_any_call(101)
         mock_client.delete_workout.assert_any_call(102)
 
@@ -340,15 +342,15 @@ class TestGarminDeletionLogic(unittest.TestCase):
 # MAIN
 # --------------------------------------------------------------------------- #
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Upload, opdater eller slet en træningsplan i Garmin Connect.")
-    ap.add_argument("plan", help="Stien til JSON-planfilen (f.eks. halvmaraton_plan.json).")
-    ap.add_argument("--dry-run", action="store_true", help="Byg og vis pasene/JSON uden upload.")
-    ap.add_argument("--week", type=int, action="append", help="Begræns til uge(r). Kan gentages.")
-    ap.add_argument("--no-clean", action="store_true", help="Ryd ikke gammel plan først under upload.")
-    ap.add_argument("--yes", action="store_true", help="Spring bekræftelse over.")
-    ap.add_argument("--skip-past", action="store_true", help="Spring pas over, der ligger i fortiden (før i dag).")
-    ap.add_argument("--delete-plan", action="store_true", help="Slet ALLE pas (og kalenderindgange) for planen, og afslut.")
-    ap.add_argument("--run-tests", action="store_true", help="Kør interne unit tests og afslut.")
+    ap = argparse.ArgumentParser(description="Upload, update, or delete a training plan in Garmin Connect.")
+    ap.add_argument("plan", help="Path to the JSON plan file (e.g. half_marathon_plan.json).")
+    ap.add_argument("--dry-run", action="store_true", help="Build and show the workouts/JSON without uploading.")
+    ap.add_argument("--week", type=int, action="append", help="Restrict to specific week(s). Can be repeated.")
+    ap.add_argument("--no-clean", action="store_true", help="Don't remove the old plan before uploading.")
+    ap.add_argument("--yes", action="store_true", help="Skip the confirmation prompt.")
+    ap.add_argument("--skip-past", action="store_true", help="Skip workouts whose date is in the past (before today).")
+    ap.add_argument("--delete-plan", action="store_true", help="Delete ALL workouts (and calendar entries) for the plan, then exit.")
+    ap.add_argument("--run-tests", action="store_true", help="Run the internal unit tests and exit.")
     args = ap.parse_args()
 
     if args.run_tests:
@@ -364,16 +366,16 @@ def main() -> int:
 
     tag = plan["plan_tag"]
 
-    # -- Håndtering af --delete-plan flaget --
+    # -- Handling of the --delete-plan flag --
     if args.delete_plan:
         if not args.yes:
-            msg = f"Er du sikker på, at du vil SLETTE ALLE eksisterende '{tag}'-pas i Garmin? [j/N] "
-            if input(msg).strip().lower() not in ("j", "y"):
-                print("Sletning afbrudt."); return 0
-                
+            msg = f"Are you sure you want to DELETE ALL existing '{tag}' workouts in Garmin? [y/N] "
+            if input(msg).strip().lower() not in ("y", "j"):
+                print("Deletion cancelled."); return 0
+
         client = authenticate()
         ok, fail = delete_existing_workouts(client, tag)
-        print(f"\nSletning fuldført: {ok} slettet, {fail} fejlede.")
+        print(f"\nDeletion complete: {ok} deleted, {fail} failed.")
         return 0 if fail == 0 else 1
 
     paces  = plan["paces"]
@@ -382,45 +384,45 @@ def main() -> int:
 
     sess_list = [s for s in plan["sessions"] if not args.week or s["week"] in args.week]
     if not sess_list:
-        print("Ingen sessioner matcher valget."); return 1
+        print("No sessions match the selection."); return 1
 
     built = []
     for s in sess_list:
         d = session_date(start, s["week"], s["day"])
-        
+
         if args.skip_past and d < today:
             continue
-            
+
         built.append((d, build_payload(s, paces, tag)))
-        
+
     if not built:
-        print("Ingen kommende sessioner tilbage efter filtrering."); return 0
-        
+        print("No upcoming sessions left after filtering."); return 0
+
     built.sort(key=lambda x: x[0])
 
-    print(f"Plan '{tag}' fra filen '{args.plan}' — {len(built)} pas skal uploades (Skipper fortid: {args.skip_past}):\n")
+    print(f"Plan '{tag}' from file '{args.plan}' — {len(built)} workouts to upload (skipping past: {args.skip_past}):\n")
     for d, p in built:
         mins = p["estimatedDurationInSecs"] // 60
         print(f"  {d.isoformat()} ({d.strftime('%a')})  {p['workoutName']:<45} ~{mins} min")
 
     if args.dry_run:
-        print("\n--- JSON for første pas ---")
+        print("\n--- JSON for first workout ---")
         print(json.dumps(built[0][1], ensure_ascii=False, indent=2))
-        print("\n--dry-run: intet uploadet eller slettet.")
+        print("\n--dry-run: nothing uploaded or deleted.")
         return 0
 
     if not args.yes:
-        msg = f"Rydde ALLE eksisterende '{tag}'-pas i Garmin og uploade de {len(built)} pas? [j/N] "
-        if input(msg).strip().lower() not in ("j", "y"):
-            print("Afbrudt."); return 0
+        msg = f"Clear ALL existing '{tag}' workouts in Garmin and upload the {len(built)} workouts? [y/N] "
+        if input(msg).strip().lower() not in ("y", "j"):
+            print("Cancelled."); return 0
 
     client = authenticate()
 
     if not args.no_clean:
-        print(f"\nRydder eksisterende versioner for '{tag}' før upload...")
+        print(f"\nClearing existing versions for '{tag}' before upload...")
         delete_existing_workouts(client, tag)
 
-    print("\nUploader + skemalægger de opdaterede pas ...")
+    print("\nUploading + scheduling the updated workouts ...")
     ok = fail = 0
     for d, payload in built:
         try:
@@ -429,10 +431,10 @@ def main() -> int:
             print(f"  + {d.isoformat()}  {payload['workoutName']}  (id={wid})")
             ok += 1
         except Exception as exc:
-            print(f"  x {d.isoformat()}  {payload['workoutName']}  FEJL: {exc}")
+            print(f"  x {d.isoformat()}  {payload['workoutName']}  ERROR: {exc}")
             fail += 1
 
-    print(f"\nFærdig. {ok} skemalagt, {fail} fejlede.")
+    print(f"\nDone. {ok} scheduled, {fail} failed.")
     return 0 if fail == 0 else 2
 
 
