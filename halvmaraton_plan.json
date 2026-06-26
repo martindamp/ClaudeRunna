@@ -1,0 +1,64 @@
+{
+  "_readme": [
+    "Redigerbar halvmaratonplan. Ret km, paces, navne, datoer eller tilfoej/fjern sessioner efter behov.",
+    "Ved upload fjernes ALLE workouts i Garmin Connect hvis navn starter med plan_tag foerst — derefter uploades denne plan.",
+    "Brug derfor IKKE plan_tag-praefikset paa workouts du selv laver manuelt, ellers slettes de med.",
+    "paces er [langsom, hurtig] i 'm:ss' pr. km. start_monday er mandag i uge 1.",
+    "session-typer: easy, recovery, long, progressive, fartlek, intervals, strides.",
+    "Koer altid scriptet med --dry-run foerst og se, at datoer og struktur ser rigtige ud."
+  ],
+
+  "plan_tag": "HM26",
+  "start_monday": "2026-06-29",
+
+  "paces": {
+    "recovery":  ["7:20", "7:05"],
+    "easy":      ["7:20", "7:00"],
+    "long":      ["7:25", "7:05"],
+    "moderate":  ["6:55", "6:35"],
+    "threshold": ["6:15", "6:00"],
+    "interval":  ["5:50", "5:30"],
+    "stride":    ["5:45", "5:10"]
+  },
+
+  "sessions": [
+    {"week": 3,  "day": "wed", "type": "easy",        "km": 3,  "name": "Roligt 3 km"},
+    {"week": 3,  "day": "sun", "type": "long",        "km": 5,  "name": "Langtur 5 km (gang/loeb)"},
+
+    {"week": 4,  "day": "wed", "type": "easy",        "km": 4,  "name": "Roligt 4 km"},
+    {"week": 4,  "day": "sun", "type": "long",        "km": 6,  "name": "Langtur 6 km"},
+
+    {"week": 5,  "day": "wed", "type": "easy",        "km": 5,  "name": "Roligt 5 km"},
+    {"week": 5,  "day": "sun", "type": "long",        "km": 8,  "name": "Langtur 8 km"},
+
+    {"week": 6,  "day": "wed", "type": "easy",        "km": 5,  "name": "Roligt 5 km"},
+    {"week": 6,  "day": "sun", "type": "long",        "km": 10, "name": "Langtur 10 km"},
+
+    {"week": 7,  "day": "wed", "type": "easy",        "km": 5,  "name": "Roligt 5 km"},
+    {"week": 7,  "day": "fri", "type": "recovery",    "km": 3,  "name": "Let 3 km (nyt 3. loeb)"},
+    {"week": 7,  "day": "sun", "type": "long",        "km": 11, "name": "Langtur 11 km"},
+
+    {"week": 8,  "day": "wed", "type": "easy",        "km": 5,  "name": "Roligt 5 km"},
+    {"week": 8,  "day": "fri", "type": "recovery",    "km": 3,  "name": "Let 3 km"},
+    {"week": 8,  "day": "sun", "type": "long",        "km": 9,  "name": "Langtur 9 km (afladning)"},
+
+    {"week": 9,  "day": "wed", "type": "progressive", "km": 6,  "name": "Progressivt 6 km"},
+    {"week": 9,  "day": "fri", "type": "recovery",    "km": 3,  "name": "Let 3 km"},
+    {"week": 9,  "day": "sun", "type": "long",        "km": 12, "name": "Langtur 12 km"},
+
+    {"week": 10, "day": "wed", "type": "fartlek",     "km": 6,  "name": "Fartleg 6 km", "reps": 6, "surge_km": 0.2, "float_km": 0.4},
+    {"week": 10, "day": "fri", "type": "recovery",    "km": 4,  "name": "Let 4 km"},
+    {"week": 10, "day": "sun", "type": "long",        "km": 14, "name": "Langtur 14 km"},
+
+    {"week": 11, "day": "wed", "type": "intervals",   "km": 6,  "name": "Intervaller 6 km", "reps": 5, "work_km": 0.4, "recover_km": 0.2},
+    {"week": 11, "day": "fri", "type": "recovery",    "km": 4,  "name": "Let 4 km"},
+    {"week": 11, "day": "sun", "type": "long",        "km": 16, "name": "Langtur 16 km (top)"},
+
+    {"week": 12, "day": "wed", "type": "strides",     "km": 5,  "name": "Roligt + strides 5 km", "reps": 5, "stride_km": 0.1, "recover_km": 0.1},
+    {"week": 12, "day": "fri", "type": "recovery",    "km": 4,  "name": "Let 4 km"},
+    {"week": 12, "day": "sun", "type": "long",        "km": 12, "name": "Langtur 12 km"},
+
+    {"week": 13, "day": "wed", "type": "strides",     "km": 5,  "name": "Roligt + strides 5 km", "reps": 5, "stride_km": 0.1, "recover_km": 0.1},
+    {"week": 13, "day": "fri", "type": "recovery",    "km": 3,  "name": "Let 3 km"}
+  ]
+}
