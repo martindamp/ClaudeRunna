@@ -1,0 +1,133 @@
+name: Sync Garmin training plan
+
+# Triggers on every push that touches a plan JSON file (matching the
+# *_plan.json naming convention, e.g. halvmaraton_plan.json). Adjust the
+# path filter below if your plan files live in a subfolder or use a
+# different naming pattern.
+#
+# Also runs on demand from the Actions tab ("Run workflow") for ad-hoc
+# syncs — e.g. to re-run after a failed attempt, to push a plan that
+# wasn't committed as *_plan.json, or to pass extra script flags like
+# --skip-past or --week.
+on:
+  push:
+    paths:
+      - "**/*_plan.json"
+  workflow_dispatch:
+    inputs:
+      plan_file:
+        description: >
+          Path to a single plan JSON file to sync (e.g. halvmaraton_plan.json).
+          Leave empty to sync every *_plan.json file in the repo.
+        required: false
+        default: ""
+      extra_args:
+        description: >
+          Extra flags appended to push_plan_to_garmin.py, e.g.
+          "--skip-past" or "--week 5 --week 6" or "--delete-plan".
+          --yes is always added automatically.
+        required: false
+        default: ""
+
+# Cancel any in-flight run for the same branch if a new commit lands
+# before the previous run finished, so two uploads of the same plan
+# never race each other.
+concurrency:
+  group: garmin-plan-sync-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    # "environment: MDP" scopes this job to the GitHub Environment named
+    # MDP. GARMIN_EMAIL and GARMIN_PASSWORD must be configured as secrets
+    # on that environment (Settings -> Environments -> MDP -> Secrets) —
+    # repository- or organization-level secrets with the same names are
+    # NOT picked up unless they're also added to this environment.
+    environment: MDP
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history, needed to diff against the previous commit
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install --upgrade garminconnect curl_cffi
+
+      - name: Detect changed plan files
+        id: changed
+        run: |
+          set -euo pipefail
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            # Manual run: use the given file, or fall back to every
+            # *_plan.json in the repo if the input was left empty.
+            input_file="${{ github.event.inputs.plan_file }}"
+            if [ -n "$input_file" ]; then
+              if [ ! -f "$input_file" ]; then
+                echo "::error::plan_file '$input_file' does not exist in this repo."
+                exit 1
+              fi
+              existing="$input_file"$'\n'
+            else
+              existing=$(find . -type f -name '*_plan.json' -printf '%P\n' | sort)
+              existing="$existing"$'\n'
+            fi
+          else
+            # Push event: diff against the previous state of the branch.
+            # github.event.before is all zeros on a repo's very first push;
+            # fall back to diffing the single pushed commit against its parent.
+            # NOTE: git's own pathspec glob differs from the Actions "paths:"
+            # filter above — a leading "**/" only matches files inside a
+            # subdirectory, not at the repo root. A bare "*_plan.json"
+            # pathspec already matches at any depth in git, so that's what
+            # we use here.
+            if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+              files=$(git show --name-only --pretty="" "${{ github.sha }}" -- '*_plan.json' || true)
+            else
+              files=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" -- '*_plan.json' || true)
+            fi
+
+            # Only keep files that still exist (ignore deletions).
+            existing=""
+            for f in $files; do
+              if [ -f "$f" ]; then
+                existing="$existing$f"$'\n'
+              fi
+            done
+          fi
+
+          echo "files<<EOF" >> "$GITHUB_OUTPUT"
+          printf '%s' "$existing" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+          if [ -z "$(printf '%s' "$existing" | tr -d '[:space:]')" ]; then
+            echo "any_changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "any_changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload changed plan(s) to Garmin Connect
+        if: steps.changed.outputs.any_changed == 'true'
+        env:
+          GARMIN_EMAIL: ${{ secrets.GARMIN_EMAIL }}
+          GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
+          EXTRA_ARGS: ${{ github.event.inputs.extra_args }}
+        run: |
+          set -euo pipefail
+          # Split EXTRA_ARGS on whitespace into an array (no quoting support
+          # needed here — flags like --week 5 or --skip-past don't need it).
+          read -r -a extra_args_arr <<< "${EXTRA_ARGS:-}"
+          while IFS= read -r plan_file; do
+            [ -z "$plan_file" ] && continue
+            echo "::group::Uploading $plan_file"
+            python push_plan_to_garmin.py "$plan_file" --yes "${extra_args_arr[@]}"
+            echo "::endgroup::"
+          done <<< "${{ steps.changed.outputs.files }}"
