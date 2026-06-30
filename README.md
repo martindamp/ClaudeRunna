@@ -9,13 +9,16 @@ plan — move a long run, adjust a pace, add a week — you edit the file and
 run the script again. It cleans up after itself: everything from a
 previous upload of the same plan is removed from Garmin Connect before
 the new version is added, so you never end up with duplicates or stale
-workouts in the calendar.
+workouts in the calendar. A bundled GitHub Actions workflow can do this
+automatically on every commit — see
+[GitHub Actions (automatic sync)](#github-actions-automatic-sync).
 
 ## Contents
 
 - [What the program does](#what-the-program-does)
 - [Installation](#installation)
 - [Authentication](#authentication)
+- [GitHub Actions (automatic sync)](#github-actions-automatic-sync)
 - [Usage](#usage)
 - [Flags](#flags)
 - [Plan file format](#plan-file-format)
@@ -69,6 +72,49 @@ export GARMIN_PASSWORD="your-password"
 - Garmin rate-limits login after many attempts in a short time (HTTP
   429). If that happens, wait a few minutes — the token cache means you
   rarely hit the login limit again once it's set.
+
+## GitHub Actions (automatic sync)
+
+A workflow at `.github/workflows/sync-garmin-plan.yml` keeps Garmin
+Connect in sync with the repo automatically, so you don't have to run
+the script locally after every edit.
+
+**On every push** that touches a `*_plan.json` file, the workflow diffs
+the commit, finds which plan file(s) changed, and runs
+`push_plan_to_garmin.py <file> --yes` for each one — same clear-then-
+upload behavior as running it yourself. Files deleted in the commit are
+correctly skipped rather than causing an error.
+
+**On demand**, from the repo's Actions tab → "Sync Garmin training plan"
+→ "Run workflow", you can trigger an ad-hoc sync without needing a new
+commit. Two optional inputs are available:
+
+| Input | Description |
+|---|---|
+| `plan_file` | Path to a single plan file to sync (e.g. `halvmaraton_plan.json`). Left empty, every `*_plan.json` file in the repo is synced. |
+| `extra_args` | Extra flags appended to the script call, e.g. `--skip-past`, `--week 5 --week 6`, or `--delete-plan`. `--yes` is always added automatically so the run never blocks on a confirmation prompt. |
+
+This is useful for re-running a failed sync, forcing a fresh upload
+without editing the file, or doing a one-off `--delete-plan` cleanup
+straight from GitHub.
+
+### Required setup
+
+The workflow's `sync` job is scoped to a GitHub **Environment** named
+`MDP` (`environment: MDP`). `GARMIN_EMAIL` and `GARMIN_PASSWORD` must be
+added as **secrets on that environment** — Settings → Environments →
+`MDP` → Secrets — not as repository- or organization-level secrets,
+which aren't visible to a job scoped to a specific environment unless
+also added there. If the `MDP` environment has protection rules (e.g.
+required reviewers), each run will wait for that approval before it's
+allowed to talk to Garmin.
+
+Because each workflow run starts on a fresh runner, there's no persistent
+token cache between runs — every run does a full email+password login.
+Pushing several plan-touching commits in quick succession can trigger
+Garmin's login rate limit (see [Troubleshooting](#troubleshooting)); the
+workflow's `concurrency` group cancels superseded runs on the same branch
+so this mainly comes up with rapid manual re-runs rather than normal use.
 
 ## Usage
 
@@ -249,12 +295,25 @@ python push_plan_to_garmin.py halvmaraton_plan.json --run-tests
 Builds: easy warmup → 5×(400 m at `interval` pace / 200 m at `recovery`
 pace) → easy cooldown, roughly 6 km total.
 
+**Trigger the GitHub Actions sync manually** (instead of running locally),
+using the [`gh` CLI](https://cli.github.com/):
+
+```bash
+gh workflow run sync-garmin-plan.yml
+gh workflow run sync-garmin-plan.yml -f plan_file=halvmaraton_plan.json -f extra_args="--skip-past"
+```
+
+Or use the "Run workflow" button under the Actions tab in the GitHub UI.
+
 ## Troubleshooting
 
 - **`API Error 429` / "too many login attempts" on login** — Garmin's
   IP rate limit on the SSO login itself, not on the workout API. Wait a
   few minutes. Once a valid token sits in `~/.garminconnect`, normal use
-  of the script rarely hits this again.
+  of the script rarely hits this again. In GitHub Actions there's no
+  token cache between runs (each run logs in fresh), so this is more
+  likely if you trigger several runs back to back — just wait and
+  re-run.
 - **The pace range shows up reversed on the watch** — Garmin stores pace
   as speed (m/s); `targetValueOne` is set as the slow bound and
   `targetValueTwo` as the fast bound in `pace_target()`. Swap them there
