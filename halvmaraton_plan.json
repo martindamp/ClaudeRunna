@@ -5,7 +5,22 @@
     "Brug derfor IKKE plan_tag-praefikset paa workouts du selv laver manuelt, ellers slettes de med.",
     "paces er [langsom, hurtig] i 'm:ss' pr. km. start_monday er mandag i uge 1.",
     "session-typer: easy, recovery, long, progressive, fartlek, intervals, strides.",
-    "Koer altid scriptet med --dry-run foerst og se, at datoer og struktur ser rigtige ud."
+    "Koer altid scriptet med --dry-run foerst og se, at datoer og struktur ser rigtige ud.",
+    "",
+    "REVISION 2026-09-04 (mod HCA Halvmaraton, Odense, soen 27/9):",
+    "1) interval-pace daempet fra 5:50-5:30 til 6:10-5:55. Det oprindelige var hurtigere end",
+    "   det reelle 5 km-niveau ud fra 10 km paa 1:01:38 (6:08/km) og giver unoedig risiko",
+    "   saa taet paa loebet efter kalvskaden.",
+    "2) Ny pace-blok 'race' (6:45-6:35) som referencetempo. Bruges ikke af nogen session-type —",
+    "   den ligger her som dokumentation af maalet. Fjern den hvis scriptet validerer paces strengt.",
+    "3) Uge 11 soendag (13/9, 16 km) er den reelle generalproeve: sidste 4 km i loebstempo,",
+    "   og gel omkring km 8 og km 15 praecis som paa loebsdagen. Kilometerne er IKKE oeget.",
+    "4) Uge 12 soendag (20/9, 12 km) beholder 12 km — det er 75% af 16 km og ligger korrekt",
+    "   7 dage ude. 5 km i loebstempo midt i turen. Skaer til 10 km hvis benene er tunge.",
+    "5) Uge 13 fredag flyttet til loerdag (26/9) som kort shakeout med 3 strides,",
+    "   saa benene er vaagne dagen efter i stedet for at hvile to doegn i traek.",
+    "   TJEK at day-mappingen i scriptet kender 'sat' — ellers saet den tilbage til 'fri'.",
+    "6) Ingen ekstra kilometer tilfoejet. Alt der lægges paa nu giver traethed, ikke form."
   ],
 
   "plan_tag": "HM26",
@@ -16,8 +31,9 @@
     "easy":      ["7:15", "6:55"],
     "long":      ["7:25", "7:05"],
     "moderate":  ["6:55", "6:35"],
+    "race":      ["6:45", "6:35"],
     "threshold": ["6:15", "6:00"],
-    "interval":  ["5:50", "5:30"],
+    "interval":  ["6:10", "5:55"],
     "stride":    ["5:45", "5:10"]
   },
 
@@ -40,7 +56,7 @@
 
     {"week": 8,  "day": "wed", "type": "easy",        "km": 5,  "name": "Easy 5 km"},
     {"week": 8,  "day": "fri", "type": "recovery",    "km": 3,  "name": "Recovery 3 km"},
-    {"week": 8,  "day": "sun", "type": "long",        "km": 9,  "name": "Long 9 km (taper)"},
+    {"week": 8,  "day": "sun", "type": "long",        "km": 9,  "name": "Long 9 km (nedtrapning)"},
 
     {"week": 9,  "day": "wed", "type": "progressive", "km": 6,  "name": "Progressive 6 km"},
     {"week": 9,  "day": "fri", "type": "recovery",    "km": 3,  "name": "Recovery 3 km"},
@@ -52,13 +68,13 @@
 
     {"week": 11, "day": "wed", "type": "intervals",   "km": 6,  "name": "Intervals 6 km", "reps": 5, "work_km": 0.4, "recover_km": 0.2},
     {"week": 11, "day": "fri", "type": "recovery",    "km": 4,  "name": "Recovery 4 km"},
-    {"week": 11, "day": "sun", "type": "long",        "km": 16, "name": "Long 16 km (top)"},
+    {"week": 11, "day": "sun", "type": "long",        "km": 16, "name": "Long 16 km (top) - sidste 4 km i 6:35-6:45 + gel km 8 og 15"},
 
     {"week": 12, "day": "wed", "type": "strides",     "km": 5,  "name": "Easy + strides 5 km", "reps": 5, "stride_km": 0.1, "recover_km": 0.1},
     {"week": 12, "day": "fri", "type": "recovery",    "km": 4,  "name": "Recovery 4 km"},
-    {"week": 12, "day": "sun", "type": "long",        "km": 12, "name": "Long 12 km"},
+    {"week": 12, "day": "sun", "type": "long",        "km": 12, "name": "Long 12 km - km 4-9 i 6:35-6:45"},
 
     {"week": 13, "day": "wed", "type": "strides",     "km": 5,  "name": "Easy + strides 5 km", "reps": 5, "stride_km": 0.1, "recover_km": 0.1},
-    {"week": 13, "day": "fri", "type": "recovery",    "km": 3,  "name": "Recovery 3 km"}
+    {"week": 13, "day": "sat", "type": "strides",     "km": 3,  "name": "Shakeout 3 km + 3 strides", "reps": 3, "stride_km": 0.1, "recover_km": 0.15}
   ]
 }
