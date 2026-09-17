@@ -1,0 +1,86 @@
+name: Validate Garmin training plan
+
+# Dry-runs every *_plan.json in the repo on any pull request against
+# main, regardless of which files the PR touches — a change to
+# push_plan_to_garmin.py can break a plan that wasn't itself edited.
+#
+# Deliberately has no "environment:" — a dry run must not need Garmin
+# credentials, so PR runs never get access to the MDP secrets. The real
+# upload lives in sync-garmin-plan.yml and only runs on push to main.
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      plan_file:
+        description: >
+          Path to a single plan JSON file to validate (e.g.
+          halvmaraton_plan.json). Leave empty to validate every
+          *_plan.json file in the repo.
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+# One validation per PR or branch; a new push supersedes the running one.
+concurrency:
+  group: garmin-plan-validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install --upgrade garminconnect curl_cffi
+
+      - name: Collect plan files
+        id: plans
+        env:
+          PLAN_FILE: ${{ github.event.inputs.plan_file }}
+        run: |
+          set -euo pipefail
+
+          if [ -n "${PLAN_FILE:-}" ]; then
+            if [ ! -f "$PLAN_FILE" ]; then
+              echo "::error::plan_file '$PLAN_FILE' does not exist in this repo."
+              exit 1
+            fi
+            files="$PLAN_FILE"$'\n'
+          else
+            files=$(find . -type f -name '*_plan.json' -printf '%P\n' | sort)
+            files="$files"$'\n'
+          fi
+
+          echo "files<<EOF" >> "$GITHUB_OUTPUT"
+          printf '%s' "$files" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+          if [ -z "$(printf '%s' "$files" | tr -d '[:space:]')" ]; then
+            echo "::notice::No *_plan.json files found — nothing to validate."
+            echo "any_found=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "any_found=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Dry-run plan(s)
+        if: steps.plans.outputs.any_found == 'true'
+        run: |
+          set -euo pipefail
+          while IFS= read -r plan_file; do
+            [ -z "$plan_file" ] && continue
+            echo "::group::Dry-run $plan_file"
+            python push_plan_to_garmin.py "$plan_file" --yes --dry-run
+            echo "::endgroup::"
+          done <<< "${{ steps.plans.outputs.files }}"
