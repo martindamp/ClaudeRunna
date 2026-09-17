@@ -11,6 +11,8 @@ name: Sync Garmin training plan
 # --skip-past or --week.
 on:
   push:
+    branches:
+      - main
     paths:
       - "**/*_plan.json"
   workflow_dispatch:
