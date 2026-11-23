@@ -101,8 +101,10 @@ def repeat_group(reps: int, children: list) -> dict:
 def steps_for(sess: dict, paces: dict) -> list:
     t, km = sess["type"], sess["km"]
 
+    # Optional overrides: "zone" for continuous types, "work_zone" for the
+    # hard part of fartlek/intervals. Defaults keep the original behavior.
     if t in ("easy", "recovery", "long"):
-        return [exec_step("interval", km, pace_target(paces, t))]
+        return [exec_step("interval", km, pace_target(paces, sess.get("zone", t)))]
 
     if t == "progressive":
         p1_km = round(km * 0.4, 2)
@@ -118,7 +120,7 @@ def steps_for(sess: dict, paces: dict) -> list:
         rest  = max(km - reps * (surge + flt), 1.0)
         wu = cd = round(rest / 2, 2)
         return [exec_step("interval", wu, pace_target(paces, "easy")),
-                repeat_group(reps, [exec_step("interval", surge, pace_target(paces, "threshold")),
+                repeat_group(reps, [exec_step("interval", surge, pace_target(paces, sess.get("work_zone", "threshold"))),
                                     exec_step("recovery", flt,   pace_target(paces, "easy"))]),
                 exec_step("interval", cd, pace_target(paces, "easy"))]
 
@@ -128,7 +130,7 @@ def steps_for(sess: dict, paces: dict) -> list:
         rest = max(km - reps * (work + rec), 1.0)
         wu = cd = round(rest / 2, 2)
         return [exec_step("interval", wu, pace_target(paces, "easy")),
-                repeat_group(reps, [exec_step("interval", work, pace_target(paces, "interval")),
+                repeat_group(reps, [exec_step("interval", work, pace_target(paces, sess.get("work_zone", "interval"))),
                                     exec_step("recovery", rec,  pace_target(paces, "recovery"))]),
                 exec_step("interval", cd, pace_target(paces, "easy"))]
 
@@ -310,6 +312,18 @@ class TestGarminPayload(unittest.TestCase):
 
         repeat_grp = steps[1]
         self.assertEqual(repeat_grp["workoutSteps"][1]["stepType"]["stepTypeKey"], "recovery")
+
+
+    def test_zone_overrides(self):
+        paces = dict(self.paces, long=["7:25", "7:05"], race=["6:35", "6:25"], fast_int=["5:45", "5:30"])
+        race = steps_for({"type": "long", "km": 10, "zone": "race"}, paces)
+        self.assertAlmostEqual(race[0]["targetValueOne"], round(pace_to_mps("6:35"), 6))
+        plain = steps_for({"type": "long", "km": 10}, paces)
+        self.assertAlmostEqual(plain[0]["targetValueOne"], round(pace_to_mps(paces["long"][0]), 6))
+        iv = steps_for({"type": "intervals", "km": 6, "reps": 4, "work_km": 0.8,
+                        "recover_km": 0.4, "work_zone": "fast_int"}, paces)
+        self.assertAlmostEqual(iv[1]["workoutSteps"][0]["targetValueOne"],
+                               round(pace_to_mps("5:45"), 6))
 
 
 class TestGarminDeletionLogic(unittest.TestCase):

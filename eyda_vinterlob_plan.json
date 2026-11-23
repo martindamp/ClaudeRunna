@@ -1,0 +1,499 @@
+{
+  "_readme": [
+    "EYDA-vinterloeb: plan mod de fire 10 km-loeb i EYDA Vinterloebene 2027 (Aarhus Motion).",
+    "Loeb: 24/1 Ceres Park (uge 9), 28/2 Hermans/Tivoli Friheden (uge 14), 14/3 Mindeparken (uge 16), 4/4 Eskelunden (uge 19).",
+    "Maal: loeb 1 ca. 1:05 (6:30/km), loeb 4 under 1:00 (under 6:00/km, sigt efter ca. 5:54/km).",
+    "Udgangspunkt: halvmaraton 27/9-2026 paa 2:25:24, derefter knaeskade; kan nu loebe 3 km smertefrit.",
+    "Uge 1-2: 2 ture/uge. Fra uge 3: 3 ture/uge (tir/tor/soen). Uge 5 torsdag flyttet til onsdag pga. juleaften.",
+    "Knae-regel: smerte over 3/10 under eller dagen efter en tur -> gentag forrige uge i stedet for at gaa videre. Ingen kvalitet foer uge 6.",
+    "Zoner med _b-suffiks bruges efter loeb 1. Juster threshold_b/interval_b og race2-4 efter resultatet af loeb 1 og 2.",
+    "Loebsdage: workouten er bare 10 km i race-zonen. Varm op 10-15 min roligt foer start (ikke en del af workouten).",
+    "paces er [langsom, hurtig] i 'm:ss' pr. km. start_monday er mandag i uge 1.",
+    "Valgfrie felter: 'zone' (easy/recovery/long) og 'work_zone' (fartlek/intervals) overstyrer standardzonen."
+  ],
+  "plan_tag": "EYDA-vinterløb",
+  "start_monday": "2026-11-23",
+  "paces": {
+    "recovery": [
+      "7:50",
+      "7:25"
+    ],
+    "easy": [
+      "7:35",
+      "7:05"
+    ],
+    "long": [
+      "7:40",
+      "7:10"
+    ],
+    "moderate": [
+      "7:00",
+      "6:40"
+    ],
+    "threshold": [
+      "6:25",
+      "6:10"
+    ],
+    "interval": [
+      "6:05",
+      "5:50"
+    ],
+    "stride": [
+      "5:45",
+      "5:10"
+    ],
+    "threshold_b": [
+      "6:10",
+      "5:55"
+    ],
+    "interval_b": [
+      "5:50",
+      "5:35"
+    ],
+    "race1": [
+      "6:35",
+      "6:25"
+    ],
+    "race2": [
+      "6:20",
+      "6:10"
+    ],
+    "race3": [
+      "6:12",
+      "6:02"
+    ],
+    "race4": [
+      "5:58",
+      "5:48"
+    ]
+  },
+  "sessions": [
+    {
+      "week": 1,
+      "day": "wed",
+      "type": "easy",
+      "km": 3,
+      "name": "Easy 3 km (knee check)"
+    },
+    {
+      "week": 1,
+      "day": "sun",
+      "type": "easy",
+      "km": 3.5,
+      "name": "Easy 3.5 km"
+    },
+    {
+      "week": 2,
+      "day": "wed",
+      "type": "easy",
+      "km": 3.5,
+      "name": "Easy 3.5 km"
+    },
+    {
+      "week": 2,
+      "day": "sun",
+      "type": "long",
+      "km": 4,
+      "name": "Long 4 km"
+    },
+    {
+      "week": 3,
+      "day": "tue",
+      "type": "recovery",
+      "km": 3,
+      "name": "Recovery 3 km"
+    },
+    {
+      "week": 3,
+      "day": "thu",
+      "type": "easy",
+      "km": 3.5,
+      "name": "Easy 3.5 km"
+    },
+    {
+      "week": 3,
+      "day": "sun",
+      "type": "long",
+      "km": 5,
+      "name": "Long 5 km"
+    },
+    {
+      "week": 4,
+      "day": "tue",
+      "type": "easy",
+      "km": 4,
+      "name": "Easy 4 km"
+    },
+    {
+      "week": 4,
+      "day": "thu",
+      "type": "strides",
+      "km": 4,
+      "name": "Easy 4 km + 4 strides",
+      "reps": 4
+    },
+    {
+      "week": 4,
+      "day": "sun",
+      "type": "long",
+      "km": 6,
+      "name": "Long 6 km"
+    },
+    {
+      "week": 5,
+      "day": "tue",
+      "type": "easy",
+      "km": 4,
+      "name": "Easy 4 km"
+    },
+    {
+      "week": 5,
+      "day": "wed",
+      "type": "strides",
+      "km": 4,
+      "name": "Easy 4 km + 4 strides (moved for Xmas Eve)",
+      "reps": 4
+    },
+    {
+      "week": 5,
+      "day": "sun",
+      "type": "long",
+      "km": 6,
+      "name": "Long 6 km"
+    },
+    {
+      "week": 6,
+      "day": "tue",
+      "type": "easy",
+      "km": 4,
+      "name": "Easy 4 km"
+    },
+    {
+      "week": 6,
+      "day": "thu",
+      "type": "fartlek",
+      "km": 5,
+      "name": "Fartlek 6x200 m",
+      "reps": 6,
+      "surge_km": 0.2,
+      "float_km": 0.2
+    },
+    {
+      "week": 6,
+      "day": "sun",
+      "type": "long",
+      "km": 7,
+      "name": "Long 7 km"
+    },
+    {
+      "week": 7,
+      "day": "tue",
+      "type": "easy",
+      "km": 5,
+      "name": "Easy 5 km"
+    },
+    {
+      "week": 7,
+      "day": "thu",
+      "type": "fartlek",
+      "km": 5.5,
+      "name": "Fartlek 4x500 m",
+      "reps": 4,
+      "surge_km": 0.5,
+      "float_km": 0.3
+    },
+    {
+      "week": 7,
+      "day": "sun",
+      "type": "long",
+      "km": 8,
+      "name": "Long 8 km"
+    },
+    {
+      "week": 8,
+      "day": "tue",
+      "type": "easy",
+      "km": 5,
+      "name": "Easy 5 km"
+    },
+    {
+      "week": 8,
+      "day": "thu",
+      "type": "intervals",
+      "km": 6,
+      "name": "Intervals 5x400 m",
+      "reps": 5,
+      "work_km": 0.4,
+      "recover_km": 0.2
+    },
+    {
+      "week": 8,
+      "day": "sun",
+      "type": "long",
+      "km": 9,
+      "name": "Long 9 km"
+    },
+    {
+      "week": 9,
+      "day": "tue",
+      "type": "easy",
+      "km": 4,
+      "name": "Easy 4 km"
+    },
+    {
+      "week": 9,
+      "day": "thu",
+      "type": "strides",
+      "km": 4,
+      "name": "Shakeout 4 km + 4 strides",
+      "reps": 4
+    },
+    {
+      "week": 9,
+      "day": "sun",
+      "type": "long",
+      "km": 10,
+      "name": "RACE 1 Ceres Park 10 km (goal ~1:05)",
+      "zone": "race1"
+    },
+    {
+      "week": 10,
+      "day": "tue",
+      "type": "recovery",
+      "km": 3,
+      "name": "Recovery 3 km"
+    },
+    {
+      "week": 10,
+      "day": "thu",
+      "type": "easy",
+      "km": 5,
+      "name": "Easy 5 km"
+    },
+    {
+      "week": 10,
+      "day": "sun",
+      "type": "long",
+      "km": 8,
+      "name": "Long 8 km"
+    },
+    {
+      "week": 11,
+      "day": "tue",
+      "type": "easy",
+      "km": 5,
+      "name": "Easy 5 km"
+    },
+    {
+      "week": 11,
+      "day": "thu",
+      "type": "fartlek",
+      "km": 6,
+      "name": "Cruise 3x1 km",
+      "reps": 3,
+      "surge_km": 1.0,
+      "float_km": 0.4,
+      "work_zone": "threshold_b"
+    },
+    {
+      "week": 11,
+      "day": "sun",
+      "type": "long",
+      "km": 10,
+      "name": "Long 10 km"
+    },
+    {
+      "week": 12,
+      "day": "tue",
+      "type": "easy",
+      "km": 5,
+      "name": "Easy 5 km"
+    },
+    {
+      "week": 12,
+      "day": "thu",
+      "type": "intervals",
+      "km": 6.5,
+      "name": "Intervals 6x500 m",
+      "reps": 6,
+      "work_km": 0.5,
+      "recover_km": 0.25,
+      "work_zone": "interval_b"
+    },
+    {
+      "week": 12,
+      "day": "sun",
+      "type": "long",
+      "km": 11,
+      "name": "Long 11 km"
+    },
+    {
+      "week": 13,
+      "day": "tue",
+      "type": "easy",
+      "km": 5,
+      "name": "Easy 5 km"
+    },
+    {
+      "week": 13,
+      "day": "thu",
+      "type": "intervals",
+      "km": 6.5,
+      "name": "Intervals 5x800 m",
+      "reps": 5,
+      "work_km": 0.8,
+      "recover_km": 0.4,
+      "work_zone": "interval_b"
+    },
+    {
+      "week": 13,
+      "day": "sun",
+      "type": "progressive",
+      "km": 9,
+      "name": "Progressive 9 km"
+    },
+    {
+      "week": 14,
+      "day": "tue",
+      "type": "easy",
+      "km": 4,
+      "name": "Easy 4 km"
+    },
+    {
+      "week": 14,
+      "day": "thu",
+      "type": "strides",
+      "km": 4,
+      "name": "Shakeout 4 km + 4 strides",
+      "reps": 4
+    },
+    {
+      "week": 14,
+      "day": "sun",
+      "type": "long",
+      "km": 10,
+      "name": "RACE 2 Hermans 10 km (goal ~1:02)",
+      "zone": "race2"
+    },
+    {
+      "week": 15,
+      "day": "tue",
+      "type": "recovery",
+      "km": 3,
+      "name": "Recovery 3 km"
+    },
+    {
+      "week": 15,
+      "day": "thu",
+      "type": "strides",
+      "km": 5,
+      "name": "Easy 5 km + 5 strides",
+      "reps": 5
+    },
+    {
+      "week": 15,
+      "day": "sun",
+      "type": "long",
+      "km": 9,
+      "name": "Long 9 km"
+    },
+    {
+      "week": 16,
+      "day": "tue",
+      "type": "easy",
+      "km": 4,
+      "name": "Easy 4 km"
+    },
+    {
+      "week": 16,
+      "day": "thu",
+      "type": "fartlek",
+      "km": 5,
+      "name": "Cruise 3x1 km (light)",
+      "reps": 3,
+      "surge_km": 1.0,
+      "float_km": 0.4,
+      "work_zone": "threshold_b"
+    },
+    {
+      "week": 16,
+      "day": "sun",
+      "type": "long",
+      "km": 10,
+      "name": "RACE 3 Mindeparken 10 km (goal ~1:01)",
+      "zone": "race3"
+    },
+    {
+      "week": 17,
+      "day": "tue",
+      "type": "recovery",
+      "km": 3.5,
+      "name": "Recovery 3.5 km"
+    },
+    {
+      "week": 17,
+      "day": "thu",
+      "type": "easy",
+      "km": 5,
+      "name": "Easy 5 km"
+    },
+    {
+      "week": 17,
+      "day": "sun",
+      "type": "long",
+      "km": 10,
+      "name": "Long 10 km"
+    },
+    {
+      "week": 18,
+      "day": "tue",
+      "type": "easy",
+      "km": 5,
+      "name": "Easy 5 km"
+    },
+    {
+      "week": 18,
+      "day": "thu",
+      "type": "intervals",
+      "km": 7,
+      "name": "Intervals 5x1 km",
+      "reps": 5,
+      "work_km": 1.0,
+      "recover_km": 0.4,
+      "work_zone": "interval_b"
+    },
+    {
+      "week": 18,
+      "day": "sun",
+      "type": "progressive",
+      "km": 10,
+      "name": "Progressive 10 km"
+    },
+    {
+      "week": 19,
+      "day": "tue",
+      "type": "easy",
+      "km": 4,
+      "name": "Easy 4 km"
+    },
+    {
+      "week": 19,
+      "day": "thu",
+      "type": "intervals",
+      "km": 4.5,
+      "name": "Sharpener 3x400 m",
+      "reps": 3,
+      "work_km": 0.4,
+      "recover_km": 0.2,
+      "work_zone": "race4"
+    },
+    {
+      "week": 19,
+      "day": "sun",
+      "type": "long",
+      "km": 10,
+      "name": "RACE 4 Eskelunden 10 km (goal sub 1:00)",
+      "zone": "race4"
+    }
+  ]
+}

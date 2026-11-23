@@ -190,6 +190,8 @@ The plan is a single JSON file with four parts: a `_readme` comment list
 | `km` | number | Total distance for the session in kilometers. |
 | `name` | string | Free text, included in the workout's name in Garmin. |
 | extra fields | — | Some types require additional keys (`reps`, `surge_km`, `work_km`, etc.) — see the table below. |
+| `zone` | string (optional) | For `easy`/`recovery`/`long`: use this pace zone instead of the type's default, e.g. `"race1"` for a race-day workout. |
+| `work_zone` | string (optional) | For `fartlek`/`intervals`: pace zone for the hard reps instead of `threshold`/`interval`, e.g. `"interval_b"` for a faster phase. |
 
 ## Session types
 
