@@ -38,6 +38,9 @@ END_DISTANCE = {"conditionTypeId": 3, "conditionTypeKey": "distance"}
 END_TIME     = {"conditionTypeId": 2, "conditionTypeKey": "time"}
 
 TARGET_NO       = {"workoutTargetTypeId": 1, "workoutTargetTypeKey": "no.target"}
+# Recovery steps (jog/walk breaks between hard reps) get no pace target, so
+# the watch doesn't alert while slowing down or walking.
+NO_TARGET       = {"targetType": TARGET_NO}
 TARGET_PACE_ZONE_ID  = 6
 TARGET_PACE_ZONE_KEY = "pace.zone"
 
@@ -121,7 +124,7 @@ def steps_for(sess: dict, paces: dict) -> list:
         wu = cd = round(rest / 2, 2)
         return [exec_step("interval", wu, pace_target(paces, "easy")),
                 repeat_group(reps, [exec_step("interval", surge, pace_target(paces, sess.get("work_zone", "threshold"))),
-                                    exec_step("recovery", flt,   pace_target(paces, "easy"))]),
+                                    exec_step("recovery", flt,   NO_TARGET)]),
                 exec_step("interval", cd, pace_target(paces, "easy"))]
 
     if t == "intervals":
@@ -131,7 +134,7 @@ def steps_for(sess: dict, paces: dict) -> list:
         wu = cd = round(rest / 2, 2)
         return [exec_step("interval", wu, pace_target(paces, "easy")),
                 repeat_group(reps, [exec_step("interval", work, pace_target(paces, sess.get("work_zone", "interval"))),
-                                    exec_step("recovery", rec,  pace_target(paces, "recovery"))]),
+                                    exec_step("recovery", rec,  NO_TARGET)]),
                 exec_step("interval", cd, pace_target(paces, "easy"))]
 
     if t == "strides":
@@ -140,7 +143,7 @@ def steps_for(sess: dict, paces: dict) -> list:
         wu = cd = round(rest / 2, 2)
         return [exec_step("interval", wu, pace_target(paces, "easy")),
                 repeat_group(reps, [exec_step_time("interval", 20, pace_target(paces, "stride")),
-                                    exec_step_time("recovery", 45, pace_target(paces, "recovery"))]),
+                                    exec_step_time("recovery", 45, NO_TARGET)]),
                 exec_step("interval", cd, pace_target(paces, "easy"))]
 
     raise ValueError(f"Unknown session type: {t!r}")
@@ -312,6 +315,18 @@ class TestGarminPayload(unittest.TestCase):
 
         repeat_grp = steps[1]
         self.assertEqual(repeat_grp["workoutSteps"][1]["stepType"]["stepTypeKey"], "recovery")
+
+    def test_recovery_steps_have_no_target(self):
+        sessions = [
+            {"type": "intervals", "km": 6, "reps": 5, "work_km": 0.4, "recover_km": 0.2},
+            {"type": "fartlek", "km": 5, "reps": 4, "surge_km": 0.2, "float_km": 0.2},
+            {"type": "strides", "km": 4, "reps": 4},
+        ]
+        for sess in sessions:
+            rec = steps_for(sess, self.paces)[1]["workoutSteps"][1]
+            self.assertEqual(rec["stepType"]["stepTypeKey"], "recovery")
+            self.assertEqual(rec["targetType"]["workoutTargetTypeKey"], "no.target")
+            self.assertNotIn("targetValueOne", rec)
 
 
     def test_zone_overrides(self):

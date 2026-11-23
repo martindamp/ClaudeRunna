@@ -197,13 +197,13 @@ The plan is a single JSON file with four parts: a `_readme` comment list
 
 | `type` | Structure | Required extra fields | Pace zones used |
 |---|---|---|---|
-| `easy` | One continuous block of the full `km`. | — | `easy` |
-| `recovery` | One continuous block of the full `km`. | — | `recovery` |
-| `long` | One continuous block of the full `km`. | — | `long` |
-| `progressive` | Three equal thirds of `km`, increasing pace. | — | `easy` → `moderate` → `threshold` |
-| `fartlek` | Warmup, then `reps` × (surge + float), then cooldown. Warmup/cooldown fill the rest of `km`. | `reps`, `surge_km`, `float_km` | `easy` (warmup/cooldown + float), `threshold` (surge) |
-| `intervals` | Warmup, then `reps` × (work + recovery), then cooldown. | `reps`, `work_km`, `recover_km` | `easy` (warmup/cooldown), `interval` (work), `recovery` (rest) |
-| `strides` | Warmup, then `reps` × (20 sec. stride + 45 sec. recovery — time-based), then cooldown. | `reps` | `easy` (warmup/cooldown), `stride`, `recovery` |
+| `easy` | One continuous block of the full `km`. | — | `easy` or `zone` |
+| `recovery` | One continuous block of the full `km`. | — | `recovery` or `zone` |
+| `long` | One continuous block of the full `km`. | — | `long` or `zone` |
+| `progressive` | Three blocks of 40 % / 40 % / 20 % of `km`, increasing pace. | — | `easy` → `moderate` → `threshold` |
+| `fartlek` | Warmup, then `reps` × (surge + float), then cooldown. Warmup/cooldown fill the rest of `km`. | `reps`, `surge_km`, `float_km` | `easy` (warmup/cooldown), `threshold` or `work_zone` (surge), no target (float) |
+| `intervals` | Warmup, then `reps` × (work + recovery), then cooldown. | `reps`, `work_km`, `recover_km` | `easy` (warmup/cooldown), `interval` or `work_zone` (work), no target (rest) |
+| `strides` | Warmup, then `reps` × (20 sec. stride + 45 sec. recovery — time-based), then cooldown. | `reps` | `easy` (warmup/cooldown), `stride`, no target (recovery) |
 
 For `fartlek` and `intervals`, warmup + reps × (sub-components) +
 cooldown don't have to sum exactly to `km` — the remainder is split
