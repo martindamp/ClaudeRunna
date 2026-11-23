@@ -99,82 +99,82 @@
     {
       "week": 3,
       "day": "tue",
+      "type": "easy",
+      "km": 2.5,
+      "name": "Easy 2.5 km"
+    },
+    {
+      "week": 3,
+      "day": "thu",
       "type": "recovery",
-      "km": 3,
-      "name": "Recovery 3 km"
+      "km": 2,
+      "name": "Recovery 2 km"
     },
     {
       "week": 3,
-      "day": "thu",
-      "type": "easy",
+      "day": "sun",
+      "type": "long",
       "km": 3.5,
-      "name": "Easy 3.5 km"
-    },
-    {
-      "week": 3,
-      "day": "sun",
-      "type": "long",
-      "km": 5,
-      "name": "Long 5 km"
+      "name": "Long 3.5 km"
     },
     {
       "week": 4,
       "day": "tue",
       "type": "easy",
-      "km": 4,
-      "name": "Easy 4 km"
+      "km": 3,
+      "name": "Easy 3 km"
     },
     {
       "week": 4,
       "day": "thu",
       "type": "strides",
-      "km": 4,
-      "name": "Easy 4 km + 4 strides",
+      "km": 2.5,
+      "name": "Easy 2.5 km + 4 strides",
       "reps": 4
     },
     {
       "week": 4,
       "day": "sun",
       "type": "long",
-      "km": 6,
-      "name": "Long 6 km"
+      "km": 4,
+      "name": "Long 4 km"
     },
     {
       "week": 5,
       "day": "tue",
       "type": "easy",
-      "km": 4,
-      "name": "Easy 4 km"
+      "km": 3,
+      "name": "Easy 3 km"
     },
     {
       "week": 5,
       "day": "thu",
       "type": "strides",
-      "km": 4,
-      "name": "Easy 4 km + 4 strides",
+      "km": 3,
+      "name": "Easy 3 km + 4 strides",
       "reps": 4
     },
     {
       "week": 5,
       "day": "sun",
       "type": "long",
-      "km": 6,
-      "name": "Long 6 km"
+      "km": 4.5,
+      "name": "Long 4.5 km"
     },
     {
       "week": 6,
       "day": "tue",
       "type": "easy",
-      "km": 4,
-      "name": "Easy 4 km"
+      "km": 3,
+      "name": "Easy 3 km"
     },
     {
       "week": 6,
       "day": "thu",
       "type": "fartlek",
-      "km": 5,
-      "name": "Fartlek 6x200 m",
-      "reps": 6,
+      "km": 3.5,
+      "name": "Fartlek 4x200 m",
+      "reps": 4,
       "surge_km": 0.2,
       "float_km": 0.2
     },
@@ -182,47 +182,47 @@
       "week": 6,
       "day": "sun",
       "type": "long",
-      "km": 7,
-      "name": "Long 7 km"
+      "km": 5,
+      "name": "Long 5 km"
     },
     {
       "week": 7,
       "day": "tue",
       "type": "easy",
-      "km": 5,
-      "name": "Easy 5 km"
+      "km": 3.5,
+      "name": "Easy 3.5 km"
     },
     {
       "week": 7,
       "day": "thu",
       "type": "fartlek",
-      "km": 5.5,
-      "name": "Fartlek 4x500 m",
+      "km": 3.5,
+      "name": "Fartlek 4x300 m",
       "reps": 4,
-      "surge_km": 0.5,
-      "float_km": 0.3
+      "surge_km": 0.3,
+      "float_km": 0.2
     },
     {
       "week": 7,
       "day": "sun",
       "type": "long",
-      "km": 8,
-      "name": "Long 8 km"
+      "km": 5.5,
+      "name": "Long 5.5 km"
     },
     {
       "week": 8,
       "day": "tue",
       "type": "easy",
-      "km": 5,
-      "name": "Easy 5 km"
+      "km": 3,
+      "name": "Easy 3 km"
     },
     {
       "week": 8,
       "day": "thu",
       "type": "intervals",
-      "km": 6,
-      "name": "Intervals 5x400 m",
-      "reps": 5,
+      "km": 4,
+      "name": "Intervals 4x400 m",
+      "reps": 4,
       "work_km": 0.4,
       "recover_km": 0.2
     },
@@ -230,22 +230,22 @@
       "week": 8,
       "day": "sun",
       "type": "long",
-      "km": 9,
-      "name": "Long 9 km"
+      "km": 7,
+      "name": "Long 7 km"
     },
     {
       "week": 9,
       "day": "tue",
       "type": "easy",
-      "km": 4,
-      "name": "Easy 4 km"
+      "km": 3,
+      "name": "Easy 3 km"
     },
     {
       "week": 9,
       "day": "thu",
       "type": "strides",
-      "km": 4,
-      "name": "Shakeout 4 km + 4 strides",
+      "km": 3,
+      "name": "Shakeout 3 km + 4 strides",
       "reps": 4
     },
     {
@@ -267,90 +267,90 @@
       "week": 10,
       "day": "thu",
       "type": "easy",
-      "km": 5,
-      "name": "Easy 5 km"
+      "km": 4,
+      "name": "Easy 4 km"
     },
     {
       "week": 10,
+      "day": "sun",
+      "type": "long",
+      "km": 7,
+      "name": "Long 7 km"
+    },
+    {
+      "week": 11,
+      "day": "tue",
+      "type": "easy",
+      "km": 4,
+      "name": "Easy 4 km"
+    },
+    {
+      "week": 11,
+      "day": "thu",
+      "type": "intervals",
+      "km": 4.5,
+      "name": "Intervals 5x400 m",
+      "reps": 5,
+      "work_km": 0.4,
+      "recover_km": 0.2,
+      "work_zone": "interval_b"
+    },
+    {
+      "week": 11,
+      "day": "sun",
+      "type": "long",
+      "km": 7,
+      "name": "Long 7 km"
+    },
+    {
+      "week": 12,
+      "day": "tue",
+      "type": "easy",
+      "km": 4,
+      "name": "Easy 4 km"
+    },
+    {
+      "week": 12,
+      "day": "thu",
+      "type": "fartlek",
+      "km": 5,
+      "name": "Cruise 2x1 km",
+      "reps": 2,
+      "surge_km": 1.0,
+      "float_km": 0.4,
+      "work_zone": "threshold_b"
+    },
+    {
+      "week": 12,
       "day": "sun",
       "type": "long",
       "km": 8,
       "name": "Long 8 km"
     },
     {
-      "week": 11,
+      "week": 13,
       "day": "tue",
       "type": "easy",
-      "km": 5,
-      "name": "Easy 5 km"
+      "km": 4.5,
+      "name": "Easy 4.5 km"
     },
     {
-      "week": 11,
-      "day": "thu",
-      "type": "fartlek",
-      "km": 6,
-      "name": "Cruise 3x1 km",
-      "reps": 3,
-      "surge_km": 1.0,
-      "float_km": 0.4,
-      "work_zone": "threshold_b"
-    },
-    {
-      "week": 11,
-      "day": "sun",
-      "type": "long",
-      "km": 10,
-      "name": "Long 10 km"
-    },
-    {
-      "week": 12,
-      "day": "tue",
-      "type": "easy",
-      "km": 5,
-      "name": "Easy 5 km"
-    },
-    {
-      "week": 12,
+      "week": 13,
       "day": "thu",
       "type": "intervals",
-      "km": 6.5,
-      "name": "Intervals 6x500 m",
-      "reps": 6,
+      "km": 5.5,
+      "name": "Intervals 5x500 m",
+      "reps": 5,
       "work_km": 0.5,
       "recover_km": 0.25,
       "work_zone": "interval_b"
     },
     {
-      "week": 12,
+      "week": 13,
       "day": "sun",
       "type": "long",
-      "km": 11,
-      "name": "Long 11 km"
-    },
-    {
-      "week": 13,
-      "day": "tue",
-      "type": "easy",
-      "km": 5,
-      "name": "Easy 5 km"
-    },
-    {
-      "week": 13,
-      "day": "thu",
-      "type": "intervals",
-      "km": 6.5,
-      "name": "Intervals 5x800 m",
-      "reps": 5,
-      "work_km": 0.8,
-      "recover_km": 0.4,
-      "work_zone": "interval_b"
-    },
-    {
-      "week": 13,
-      "day": "sun",
-      "type": "progressive",
       "km": 9,
-      "name": "Progressive 9 km"
+      "name": "Long 9 km"
     },
     {
       "week": 14,
@@ -394,8 +394,8 @@
       "week": 15,
       "day": "sun",
       "type": "long",
-      "km": 9,
-      "name": "Long 9 km"
+      "km": 8,
+      "name": "Long 8 km"
     },
     {
       "week": 16,
@@ -408,9 +408,9 @@
       "week": 16,
       "day": "thu",
       "type": "fartlek",
-      "km": 5,
-      "name": "Cruise 3x1 km (light)",
-      "reps": 3,
+      "km": 4.5,
+      "name": "Cruise 2x1 km (light)",
+      "reps": 2,
       "surge_km": 1.0,
       "float_km": 0.4,
       "work_zone": "threshold_b"
@@ -441,23 +441,23 @@
       "week": 17,
       "day": "sun",
       "type": "long",
-      "km": 10,
-      "name": "Long 10 km"
+      "km": 9,
+      "name": "Long 9 km"
     },
     {
       "week": 18,
       "day": "tue",
       "type": "easy",
-      "km": 5,
-      "name": "Easy 5 km"
+      "km": 4,
+      "name": "Easy 4 km"
     },
     {
       "week": 18,
       "day": "thu",
       "type": "intervals",
-      "km": 7,
-      "name": "Intervals 5x1 km",
-      "reps": 5,
+      "km": 6.5,
+      "name": "Intervals 4x1 km",
+      "reps": 4,
       "work_km": 1.0,
       "recover_km": 0.4,
       "work_zone": "interval_b"
@@ -466,8 +466,8 @@
       "week": 18,
       "day": "sun",
       "type": "progressive",
-      "km": 10,
-      "name": "Progressive 10 km"
+      "km": 9,
+      "name": "Progressive 9 km"
     },
     {
       "week": 19,
