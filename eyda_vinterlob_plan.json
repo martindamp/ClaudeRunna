@@ -4,7 +4,7 @@
     "Loeb: 24/1 Ceres Park (uge 9), 28/2 Hermans/Tivoli Friheden (uge 14), 14/3 Mindeparken (uge 16), 4/4 Eskelunden (uge 19).",
     "Maal: loeb 1 ca. 1:05 (6:30/km), loeb 4 under 1:00 (under 6:00/km, sigt efter ca. 5:54/km).",
     "Udgangspunkt: halvmaraton 27/9-2026 paa 2:25:24, derefter knaeskade; kan nu loebe 3 km smertefrit.",
-    "Uge 1-2: 2 ture/uge (tir + soen). Fra uge 3: 3 ture/uge (tir/tor/soen). Uge 5 torsdag flyttet til onsdag pga. juleaften.",
+    "Uge 1-2: 2 ture/uge (tir + soen). Fra uge 3: 3 ture/uge (tir/tor/soen).",
     "Knae-regel: smerte over 3/10 under eller dagen efter en tur -> gentag forrige uge i stedet for at gaa videre. Ingen kvalitet foer uge 6.",
     "Zoner med _b-suffiks bruges efter loeb 1. Juster threshold_b/interval_b og race2-4 efter resultatet af loeb 1 og 2.",
     "Loebsdage: workouten er bare 10 km i race-zonen. Varm op 10-15 min roligt foer start (ikke en del af workouten).",
@@ -148,10 +148,10 @@
     },
     {
       "week": 5,
-      "day": "wed",
+      "day": "thu",
       "type": "strides",
       "km": 4,
-      "name": "Easy 4 km + 4 strides (moved for Xmas Eve)",
+      "name": "Easy 4 km + 4 strides",
       "reps": 4
     },
     {
